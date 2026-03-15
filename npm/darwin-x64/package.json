@@ -1,0 +1,11 @@
+{
+  "name": "rubato-fft-node-darwin-x64",
+  "version": "0.1.0",
+  "os": ["darwin"],
+  "cpu": ["x64"],
+  "main": "rubato-fft-node.darwin-x64.node",
+  "files": ["rubato-fft-node.darwin-x64.node"],
+  "description": "rubato-fft-node native binding for macOS x64",
+  "license": "MIT",
+  "engines": { "node": ">= 18" }
+}

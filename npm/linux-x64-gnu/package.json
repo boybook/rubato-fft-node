@@ -1,0 +1,12 @@
+{
+  "name": "rubato-fft-node-linux-x64-gnu",
+  "version": "0.1.0",
+  "os": ["linux"],
+  "cpu": ["x64"],
+  "main": "rubato-fft-node.linux-x64-gnu.node",
+  "files": ["rubato-fft-node.linux-x64-gnu.node"],
+  "description": "rubato-fft-node native binding for Linux x64",
+  "license": "MIT",
+  "engines": { "node": ">= 18" },
+  "libc": ["glibc"]
+}

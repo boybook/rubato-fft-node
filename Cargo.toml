@@ -1,0 +1,27 @@
+[package]
+name = "rubato-fft-node"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+rubato = "1.0"
+realfft = "3.5"
+rustfft = "6"
+num-complex = "0.4"
+napi = { version = "2", default-features = false, features = ["async", "napi8"] }
+napi-derive = "2"
+base64 = "0.22"
+audioadapter = "2.0"
+audioadapter-buffers = "2.0"
+
+[build-dependencies]
+napi-build = "2"
+
+[profile.release]
+lto = true
+strip = "symbols"
+codegen-units = 1

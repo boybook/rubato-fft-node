@@ -1,0 +1,55 @@
+{
+  "name": "rubato-fft-node",
+  "version": "0.1.0",
+  "description": "High-performance native audio DSP for Node.js, powered by Rust",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "napi": {
+    "name": "rubato-fft-node",
+    "triples": {
+      "defaults": false,
+      "additional": [
+        "aarch64-apple-darwin",
+        "x86_64-apple-darwin",
+        "x86_64-unknown-linux-gnu",
+        "x86_64-pc-windows-msvc"
+      ]
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.0",
+    "ava": "^6.0.0",
+    "tsx": "^4.0.0"
+  },
+  "ava": {
+    "timeout": "3m",
+    "extensions": {
+      "ts": "commonjs"
+    },
+    "nodeArguments": [
+      "--require=tsx"
+    ]
+  },
+  "engines": {
+    "node": ">= 18"
+  },
+  "scripts": {
+    "artifacts": "napi artifacts",
+    "build": "napi build --platform --release",
+    "build:debug": "napi build --platform",
+    "prepublishOnly": "napi prepublish -t npm",
+    "test": "ava",
+    "universal": "napi universal -t darwin-arm64 -t darwin-x64"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "optionalDependencies": {
+    "rubato-fft-node-darwin-arm64": "0.1.0",
+    "rubato-fft-node-darwin-x64": "0.1.0",
+    "rubato-fft-node-linux-x64-gnu": "0.1.0",
+    "rubato-fft-node-win32-x64-msvc": "0.1.0"
+  }
+}
