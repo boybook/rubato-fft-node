@@ -17,6 +17,7 @@ import {
   float32ToInt16,
   interleave,
   deinterleave,
+  ComplexSpectrumAnalyzer,
 } from "../index.js";
 
 // Helper: generate a sine wave
@@ -29,6 +30,16 @@ function sineWave(
   const data = new Float32Array(numSamples);
   for (let i = 0; i < numSamples; i++) {
     data[i] = Math.sin((2 * Math.PI * frequency * i) / sampleRate);
+  }
+  return data;
+}
+
+function complexTone(offsetHz: number, sampleRate: number, length: number): Float32Array {
+  const data = new Float32Array(length * 2);
+  for (let index = 0; index < length; index++) {
+    const phase = 2 * Math.PI * offsetHz * index / sampleRate;
+    data[index * 2] = Math.cos(phase);
+    data[index * 2 + 1] = Math.sin(phase);
   }
   return data;
 }
@@ -131,6 +142,51 @@ test("SpectrumAnalyzer: empty input doesn't crash", async (t) => {
   const analyzer = new SpectrumAnalyzer(48000, 1024);
   const result = await analyzer.analyze(new Float32Array(0));
   t.truthy(result);
+});
+
+test("ComplexSpectrumAnalyzer: preserves positive and negative IQ frequency direction", async (t) => {
+  const sampleRate = 96_000;
+  const fftSize = 4096;
+  const analyzer = new ComplexSpectrumAnalyzer({
+    sampleRate,
+    fftSize,
+    outputBins: 1024,
+    windowFunction: "hann",
+    removeDc: true,
+  });
+  const positive = await analyzer.analyze(complexTone(12_000, sampleRate, fftSize));
+  const negative = await analyzer.analyze(complexTone(-9_000, sampleRate, fftSize));
+  t.true(Math.abs(positive.peakOffsetHz - 12_000) <= positive.frequencyResolution * 2);
+  t.true(Math.abs(negative.peakOffsetHz + 9_000) <= negative.frequencyResolution * 2);
+  t.true(Math.abs(positive.peakMagnitude) < 0.1);
+  t.is(positive.magnitudesLength, 1024);
+  t.is(Buffer.from(positive.magnitudesBase64, "base64").byteLength, 2048);
+  t.is(positive.scale, 0.01);
+  t.is(positive.spanHz, sampleRate);
+});
+
+test("ComplexSpectrumAnalyzer: removes a constant complex DC component", async (t) => {
+  const fftSize = 1024;
+  const dc = new Float32Array(fftSize * 2);
+  for (let index = 0; index < fftSize; index++) {
+    dc[index * 2] = 0.5;
+    dc[index * 2 + 1] = -0.25;
+  }
+  const analyzer = new ComplexSpectrumAnalyzer({
+    sampleRate: 48_000,
+    fftSize,
+    outputBins: 256,
+    windowFunction: "hann",
+    removeDc: true,
+  });
+  const result = await analyzer.analyze(dc);
+  t.true(result.peakMagnitude <= -190);
+});
+
+test("ComplexSpectrumAnalyzer: rejects malformed IQ and invalid options", async (t) => {
+  t.throws(() => new ComplexSpectrumAnalyzer({ sampleRate: 48_000, fftSize: 1000, outputBins: 256 }));
+  const analyzer = new ComplexSpectrumAnalyzer({ sampleRate: 48_000, fftSize: 1024, outputBins: 256 });
+  await t.throwsAsync(analyzer.analyze(new Float32Array(3)));
 });
 
 // ======================== FFT ========================
