@@ -63,6 +63,26 @@ const recovered = await realIfft(spectrum, 1024);
 const mags = await magnitudeSpectrum(signal, 1024);
 ```
 
+### Complex IQ Spectrum
+
+```js
+import { ComplexSpectrumAnalyzer } from 'rubato-fft-node';
+
+const analyzer = new ComplexSpectrumAnalyzer({
+  sampleRate: 96000,
+  fftSize: 4096,
+  outputBins: 1024,
+  windowFunction: 'hann',
+  removeDc: true,
+});
+const result = await analyzer.analyze(interleavedIq); // I0,Q0,I1,Q1,...
+console.log(result.peakOffsetHz, result.magnitudesBase64);
+```
+
+The complex analyzer performs optional mean-DC removal, FFT shift,
+coherent-gain normalization, dBFS conversion, and max-pool display-bin
+compression on a N-API async task.
+
 ### Window Functions
 
 ```js
@@ -134,6 +154,7 @@ const [left, right] = await deinterleave(stereoData, 2);
 |-----|------|-------------|
 | `new SpectrumAnalyzer(sampleRate, fftSize, window?, targetRate?)` | Constructor | Create analyzer |
 | `analyzer.analyze(audioData)` | `Promise<SpectrumResult>` | Analyze audio |
+| `new ComplexSpectrumAnalyzer(options)` | Constructor | Create an interleaved-IQ analyzer |
 | `magnitudeSpectrum(signal, fftSize)` | `Promise<Float32Array>` | Magnitude spectrum |
 | `powerSpectrumDb(signal, fftSize)` | `Promise<Float32Array>` | Power spectrum (dB) |
 | `realFft(signal, fftSize)` | `Promise<Float32Array>` | Forward real FFT |

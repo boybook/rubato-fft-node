@@ -310,8 +310,9 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { int16ToFloat32, float32ToInt16, interleave, deinterleave, magnitudeSpectrum, powerSpectrumDb, realFft, realIfft, designBiquad, BiquadFilter, measureLevel, ResamplerQuality, Resampler, resample, SpectrumAnalyzer, createWindow, applyWindow } = nativeBinding
+const { ComplexSpectrumAnalyzer, int16ToFloat32, float32ToInt16, interleave, deinterleave, magnitudeSpectrum, powerSpectrumDb, realFft, realIfft, designBiquad, BiquadFilter, measureLevel, ResamplerQuality, Resampler, resample, SpectrumAnalyzer, createWindow, applyWindow } = nativeBinding
 
+module.exports.ComplexSpectrumAnalyzer = ComplexSpectrumAnalyzer
 module.exports.int16ToFloat32 = int16ToFloat32
 module.exports.float32ToInt16 = float32ToInt16
 module.exports.interleave = interleave

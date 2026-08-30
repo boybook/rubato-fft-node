@@ -1,6 +1,7 @@
 #![deny(clippy::all)]
 #![allow(private_interfaces)]
 
+mod complex_spectrum;
 mod convert;
 mod error;
 mod fft;

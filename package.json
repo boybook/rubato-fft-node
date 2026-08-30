@@ -1,6 +1,6 @@
 {
   "name": "rubato-fft-node",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "High-performance native audio DSP for Node.js, powered by Rust",
   "main": "index.js",
   "types": "index.d.ts",
@@ -52,5 +52,4 @@
     "index.d.ts"
   ],
   "optionalDependencies": {}
-
 }
